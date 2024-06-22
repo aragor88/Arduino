@@ -1,0 +1,68 @@
+#include <Servo.h>   // Knihovna pro servo
+#define SERVO_PIN 3  // Definování pinu, na kterém se nachází servo
+#define PLYN_PIN 2  // Definování pinu, inverzni
+Servo servo_motor;
+int uhel_otoceni = 90;
+int value = 0;
+int max = 180;
+int stred = 90;
+int valueBef = 0;
+unsigned long casomira;
+int dobaStisku, limit = 25;
+bool svitit;
+void setup() {
+  pinMode(PLYN_PIN, INPUT);
+  pinMode(13, OUTPUT);
+  servo_motor.attach(SERVO_PIN);  // Propojení instance našeho serva
+  Serial.begin(9600);
+}
+
+void loop() {
+  //casomira = millis();
+
+  value = digitalRead(PLYN_PIN);
+  delay(25);
+
+
+  /*
+  {
+    dobaStisku = millis() - casomira;
+  }
+
+  {
+    dobaStisku=0;
+  }
+
+
+  if (dobaStisku >= limit)
+  {
+
+    svitit = !svitit;
+    dobaStisku = 0;
+  }
+*/
+
+  if (valueBef == value) {
+
+    if (value == 0) {
+      if (uhel_otoceni < max) {
+        uhel_otoceni++;
+        digitalWrite(13, 1);
+      }
+    } else {
+      if (uhel_otoceni > 30+stred) {
+        uhel_otoceni=uhel_otoceni-30;
+        digitalWrite(13, 0);
+      }else
+      {
+        uhel_otoceni= stred;
+        digitalWrite(13, 0);
+      }
+    }
+    Serial.println(uhel_otoceni);
+  }
+
+  servo_motor.write(uhel_otoceni);
+
+  valueBef = value;
+}
